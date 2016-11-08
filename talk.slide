@@ -80,7 +80,7 @@ You can script this, but you can also leverage Apex to do this for you...
 
 - Download
 - Upgrade to latest using *apex*upgrade*
-- `apex init`
+- *apex*init*
 
 Init will pull AWS User credentials from .aws or environment variables.
 These are the credentials it will use to interact with AWS.
@@ -186,18 +186,46 @@ _Every_time_you_make_a_change_to_api_gateway_you_must_click_Deploy_API_or_the_ch
 
 - Turn the json event into an instance of our event struct
 - Make sure the values are correct
-- Check the redis cache
+- Check the redis cache (LRU!)
 - If there, return
 - If not, pull from db, write to cache and then return
 
-* Other things to keep in mind
+* Speaking of Redis
 
-Keeping it warm
-Other apex commands
-Deploy history of gateway api
-Does it make sense cost wise?
+There's lots of info about caching.
 
-When using redis as your cache store, be sure to read this:
-http://redis.io/topics/lru-cache
-http://docs.aws.amazon.com/AmazonElastiCache/latest/UserGuide/ParameterGroups.Redis.html
-https://coderanch.com/wiki/660295/Caching-Strategies
+.link http://redis.io/topics/lru-cache Least Recently Used
+.link https://coderanch.com/wiki/660295/Caching-Strategies Caching Strategies
+.link http://docs.aws.amazon.com/AmazonElastiCache/latest/UserGuide/ParameterGroups.Redis.html AWS Redis Parameter Groups
+
+
+* Other things
+
+- Keeping Lambda warm
+- Other Apex commands (list, delete, build,rollback,logs  )
+- Deploy history of gateway api
+
+
+* Does it make sense cost wise?
+
+Well, probably.
+
+- How much RAM do you need?
+- How long does the task run?
+- How many requests?
+
+.link https://pinboard.in/u:genghisjahn/t:pricing/ Pricing
+
+* Where to cache?
+
+You can cache within the function, but that means every call goes into the function, although you can share a Redis instance
+
+You can cache at the API Gateway level, but then you have to pay for caching for each API.
+
+* What next?
+
+I'm going to try and get this in production.
+
+- It's there on features.
+- It might be there on cost.
+- I want to see how it holds up.
